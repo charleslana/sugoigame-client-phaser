@@ -1,0 +1,59 @@
+{
+  "name": "sugoi-game-client",
+  "description": "",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "MIT",
+  "licenseUrl": "",
+  "bugs": {
+    "url": "https://"
+  },
+  "homepage": "",
+  "keywords": [
+    "phaser",
+    "phaser3",
+    "typescript",
+    "vue",
+    "vite",
+    "vuetify"
+  ],
+  "scripts": {
+    "dev": "vite --config vite/config.dev.mjs",
+    "build": "vite build --config vite/config.prod.mjs",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "format": "prettier --write src/",
+    "start": "npx serve dist -s -l 4000",
+    "kill": "kill -9 $(lsof -ti:8080)",
+    "kill-s": "kill -9 $(lsof -ti:4000)"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "phaser": "^3.80.1",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.31",
+    "vue-router": "^4.4.0",
+    "vuetify": "^3.6.10"
+  },
+  "devDependencies": {
+    "@mdi/font": "^7.4.47",
+    "@rushstack/eslint-patch": "^1.10.3",
+    "@tsconfig/node20": "^20.1.2",
+    "@types/node": "^20.11.20",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "@vue/tsconfig": "^0.5.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-vue": "^9.27.0",
+    "prettier": "^3.3.2",
+    "serve": "^14.2.3",
+    "terser": "^5.31.0",
+    "typescript": "~5.3.3",
+    "vite": "^5.2.11",
+    "vue-tsc": "^2.0.6"
+  }
+}
