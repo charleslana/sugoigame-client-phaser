@@ -1,5 +1,48 @@
 <script setup lang="ts">
+import router from '@/router';
+import { ref } from 'vue';
+
 const images = ['bg-01', 'bg-02', 'bg-03', 'bg-04', 'bg-05', 'bg-06', 'bg-07', 'bg-08'];
+
+const email = ref('');
+const password = ref('');
+const valid = ref(false);
+const dialog = ref(false);
+const loading = ref(false);
+const error = ref('');
+
+const emailRules = [
+  (v: string) => !!v || 'E-mail é obrigatório',
+  (v: string) => /.+@.+\..+/.test(v) || 'E-mail deve ser válido',
+  (v: string) => v.length >= 5 || 'E-mail deve ter pelo menos 5 caracteres',
+  (v: string) => v.length <= 50 || 'E-mail deve ter no máximo 50 caracteres'
+];
+
+const passwordRules = [
+  (v: string) => !!v || 'Senha é obrigatória',
+  (v: string) => v.length >= 1 || 'Senha deve ter pelo menos 1 caracteres'
+];
+
+function submitForm(): void {
+  clearError();
+  if (valid.value) {
+    loading.value = true;
+    setTimeout(() => {
+      const e = true;
+      if (e) {
+        error.value = 'Usuário ou senha inválida.';
+        loading.value = false;
+        return;
+      }
+      loading.value = false;
+      dialog.value = false;
+    }, 2000);
+  }
+}
+
+function clearError(): void {
+  error.value = '';
+}
 </script>
 
 <template>
@@ -24,23 +67,95 @@ const images = ['bg-01', 'bg-02', 'bg-03', 'bg-04', 'bg-05', 'bg-06', 'bg-07', '
                 Um MMORPG estratégico gratuito cheio de PvP feito por fãs de One Piece. É um jogo de
                 mundo aberto com batalhas em turnos e muito PvP.
               </div>
-              <v-dialog transition="dialog-top-transition" max-width="500">
+              <v-dialog
+                v-model="dialog"
+                transition="dialog-top-transition"
+                max-width="500"
+                persistent
+              >
                 <template v-slot:activator="{ props: activatorProps }">
-                  <v-btn
-                    v-bind="activatorProps"
-                    size="large"
-                    color="error"
-                    class="max-width"
-                    text="Comece a jogar!"
-                  ></v-btn>
+                  <v-btn v-bind="activatorProps" size="large" color="error" class="max-width" text>
+                    Comece a jogar!
+                  </v-btn>
                 </template>
                 <template v-slot:default="{ isActive }">
-                  <v-card title="Dialog">
-                    <v-card-text> Texto aqui </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn text="Close Dialog" @click="isActive.value = false"></v-btn>
-                    </v-card-actions>
+                  <v-card
+                    prepend-icon="mdi-account"
+                    title="Acessar minha conta"
+                    class="login-dialog"
+                  >
+                    <v-form v-model="valid" @submit.prevent="submitForm">
+                      <v-container>
+                        <v-alert
+                          density="compact"
+                          :text="error"
+                          title="Erro"
+                          type="error"
+                          class="mb-5"
+                          v-if="error"
+                        ></v-alert>
+                        <v-row>
+                          <v-col cols="12" md="12">
+                            <v-text-field
+                              v-model="email"
+                              min="0"
+                              max="50"
+                              :counter="50"
+                              :rules="emailRules"
+                              label="E-mail"
+                              required
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="12">
+                            <v-text-field
+                              v-model="password"
+                              :rules="passwordRules"
+                              label="Senha"
+                              hide-details
+                              required
+                              type="password"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-card-text class="text-center">
+                          <v-btn
+                            color="primary"
+                            type="submit"
+                            text
+                            variant="tonal"
+                            :loading="loading"
+                            :disabled="!valid"
+                          >
+                            Acessar
+                          </v-btn>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            class="mx-2"
+                            color="white"
+                            rounded="xl"
+                            variant="text"
+                            :disabled="loading"
+                            @click="router.push('/register')"
+                          >
+                            Cadastre-se agora!
+                          </v-btn>
+                          <v-btn
+                            text
+                            variant="plain"
+                            @click="
+                              () => {
+                                isActive.value = false;
+                                clearError();
+                              }
+                            "
+                            :disabled="loading"
+                            >Fechar</v-btn
+                          >
+                        </v-card-actions>
+                      </v-container>
+                    </v-form>
                   </v-card>
                 </template>
               </v-dialog>
@@ -62,17 +177,17 @@ const images = ['bg-01', 'bg-02', 'bg-03', 'bg-04', 'bg-05', 'bg-06', 'bg-07', '
         <v-container>
           <v-row>
             <v-col>
-              <v-btn class="mx-2" color="white" rounded="xl" variant="text"
-                >{{ new Date().getFullYear() }} - Sugoi Game</v-btn
-              >
+              <v-btn class="mx-2" color="white" rounded="xl" variant="text">
+                {{ new Date().getFullYear() }} - Sugoi Game
+              </v-btn>
               <router-link to="/example1" class="footer-link">
-                <v-btn class="mx-2" color="white" rounded="xl" variant="text"
-                  >Política de Privacidade</v-btn
-                >
+                <v-btn class="mx-2" color="white" rounded="xl" variant="text">
+                  Política de Privacidade
+                </v-btn>
               </router-link>
               <router-link to="/example2" class="footer-link">
-                <v-btn class="mx-2" color="white" rounded="xl" variant="text"
-                  >Regras e Punições
+                <v-btn class="mx-2" color="white" rounded="xl" variant="text">
+                  Regras e Punições
                 </v-btn>
               </router-link>
             </v-col>
@@ -97,86 +212,40 @@ const images = ['bg-01', 'bg-02', 'bg-03', 'bg-04', 'bg-05', 'bg-06', 'bg-07', '
   background-position: center center;
   min-height: 100vh;
   color: #333;
+  animation: bg 45s linear infinite;
+  width: 150%;
 }
 
 .bg-01 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-01.jpg');
+  background-image: url('../assets/images/backgrounds/bg-01.jpg');
 }
 
 .bg-02 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-02.jpg');
+  background-image: url('../assets/images/backgrounds/bg-02.jpg');
 }
 
 .bg-03 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-03.jpg');
+  background-image: url('../assets/images/backgrounds/bg-03.jpg');
 }
 
 .bg-04 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-04.jpg');
+  background-image: url('../assets/images/backgrounds/bg-04.jpg');
 }
 
 .bg-05 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-05.jpg');
+  background-image: url('../assets/images/backgrounds/bg-05.jpg');
 }
 
 .bg-06 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-06.jpg');
+  background-image: url('../assets/images/backgrounds/bg-06.jpg');
 }
 
 .bg-07 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-07.jpg');
+  background-image: url('../assets/images/backgrounds/bg-07.jpg');
 }
 
 .bg-08 {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.3) 35%,
-      rgba(0, 0, 0, 0.3) 100%
-    ),
-    url('../assets/images/backgrounds/bg-08.jpg');
+  background-image: url('../assets/images/backgrounds/bg-08.jpg');
 }
 
 .content-overlay {
@@ -190,6 +259,7 @@ const images = ['bg-01', 'bg-02', 'bg-03', 'bg-04', 'bg-05', 'bg-06', 'bg-07', '
   justify-content: center;
   align-items: center;
   z-index: 1;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .logo {
@@ -208,5 +278,41 @@ const images = ['bg-01', 'bg-02', 'bg-03', 'bg-04', 'bg-05', 'bg-06', 'bg-07', '
 
 .footer {
   background: transparent;
+}
+
+.custom-link {
+  color: white;
+  text-decoration: none;
+}
+
+.custom-link:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 1280px) {
+  .background {
+    animation: bg 29.25s linear infinite;
+  }
+}
+
+@media screen and (max-width: 736px) {
+  .background {
+    animation: bg 18s linear infinite;
+  }
+}
+
+@keyframes bg {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
+.login-dialog {
+  background: rgba(17, 17, 17, 0.96);
+  color: white;
 }
 </style>
