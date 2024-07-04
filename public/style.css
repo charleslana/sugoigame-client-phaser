@@ -68,3 +68,7 @@ body {
     rgba(0, 0, 0, 0.5) 1px 1px 1px,
     rgba(0, 0, 0, 0.5) -1px -1px 1px;
 }
+
+.custom-button {
+  background: url('assets/images/layout/pattern-1.png') top center repeat !important;
+}

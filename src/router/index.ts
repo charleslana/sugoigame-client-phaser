@@ -1,4 +1,5 @@
 import LoginView from '@/views/LoginView.vue';
+import RegisterView from '@/views/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -9,6 +10,12 @@ const router = createRouter({
       name: 'login',
       component: LoginView,
       meta: { title: getTitle('Aventuras sem limites') }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
+      meta: { title: getTitle('Cadastro') }
     },
     {
       path: '/:catchAll(.*)',
